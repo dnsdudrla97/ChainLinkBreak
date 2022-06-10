@@ -18,7 +18,7 @@ contract Counter is KeeperCompatibleInterface {
     uint public lastTimeStamp;
 
     constructor(uint updateInterval) {
-      interval = updateInterval;
+      interval = updateIn terval;
       lastTimeStamp = block.timestamp;
 
       counter = 0;
