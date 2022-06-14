@@ -147,7 +147,7 @@ contract LinkVaults is ChainlinkClient, Ownable {
         }
     }
 
-    // data feed parser
+    // data feed parser Oracle:data feed
     function getTokenEthPrice(address token)
         public
         view
