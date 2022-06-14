@@ -1,39 +1,43 @@
-import { expect, use, util } from "chai";
+import chai, { expect, use, util } from "chai";
 import { ethers } from "hardhat";
 import { BigNumber, Contract, Signer } from "ethers";
 import { MockProvider, deployContract, solidity } from "ethereum-waffle";
 import bnJs from "bn.js";
-import chai from "chai";
 
 // Enable and inject BN dependency
 chai.use(require("chai-bn")(bnJs));
 use(solidity);
-let deployer: Signer;
-let user: Signer;
 
-// contract address
+// user accounts
+let deployer: Signer;
+
+// contract address state variable
 let linkVault: Contract;
 let linkToken: Contract;
 
 // user data logic
-describe("Greeter", () => {
+describe("ChainLink Oracel Stake", () => {
   beforeEach(async () => {
     [deployer] = await ethers.getSigners();
 
-  });
+    // token
+    const tokenFactory = await ethers.getContractFactory("LinkToken", deployer);
+    linkToken = await tokenFactory.deploy();
+    await linkToken.deployed();
 
-  it("Should return the new greeting once it's changed", async function () {
-    const Greeter = await ethers.getContractFactory("Greeter");
-    const greeter = await Greeter.deploy("Hello, world!");
-    await greeter.deployed();
+    console.log(`linkToken Contract: ${linkToken.address}`)
 
-    expect(await greeter.greet()).to.equal("Hello, world!");
+    const vaultFactory = await ethers.getContractFactory(
+      "LinkVaults",
+      deployer
+    );
 
-    const setGreetingTx = await greeter.setGreeting("Hola, mundo!");
+    linkVault = await vaultFactory.deploy(linkToken.address);
+    await linkVault.deployed();
 
-    // wait until the transaction is mined
-    await setGreetingTx.wait();
+    // add allowed token process (func call)
+    // const allowToken = await linkVault.functions.addAllowedTokens(
 
-    expect(await greeter.greet()).to.equal("Hola, mundo!");
+    // )
   });
 });
